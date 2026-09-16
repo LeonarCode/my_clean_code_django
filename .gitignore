@@ -3,3 +3,4 @@ Pipfile.lock
 .env
 package-lock.json
 package.json
+node_modules
