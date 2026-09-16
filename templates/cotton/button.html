@@ -1,0 +1,16 @@
+<c-vars variant="primary" size="md" type="button" class="" />
+<button
+  type="{{ type }}"
+  {{ attrs }}
+  class="inline-flex items-center justify-center gap-2 rounded-xl font-medium transition duration-150 ease-out active:scale-[0.97] disabled:cursor-not-allowed disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-offset-2 dark:focus:ring-offset-slate-950
+    {% if size == 'sm' %}px-3 py-1.5 text-xs
+    {% elif size == 'lg' %}px-6 py-3 text-base
+    {% else %}px-4 py-2.5 text-sm
+    {% endif %}
+    {% if variant == 'primary' %}bg-teal-600 text-white shadow-sm shadow-teal-600/20 hover:bg-teal-500 focus:ring-teal-500
+    {% elif variant == 'secondary' %}bg-slate-100 text-slate-700 hover:bg-slate-200 focus:ring-slate-400 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700
+    {% elif variant == 'danger' %}bg-rose-600 text-white shadow-sm shadow-rose-600/20 hover:bg-rose-500 focus:ring-rose-500
+    {% elif variant == 'outline' %}border border-slate-300 bg-transparent text-slate-700 hover:bg-slate-50 focus:ring-slate-400 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800
+    {% elif variant == 'ghost' %}bg-transparent text-slate-600 hover:bg-slate-100 focus:ring-slate-300 dark:text-slate-300 dark:hover:bg-slate-800
+    {% endif %} {{ class }}"
+>{{ slot }}</button>

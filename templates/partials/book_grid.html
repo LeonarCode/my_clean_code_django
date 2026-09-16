@@ -1,0 +1,20 @@
+{% if books %}
+<div class="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+  {% for book in books %}
+    <c-book-card
+      :book="book"
+      :is_owner="book.is_owner"
+      :is_borrowed_by_me="book.is_borrowed_by_me"
+      :active_borrowing="book.active_borrowing"
+    />
+  {% endfor %}
+</div>
+
+<c-pagination :page_obj="page_obj" :query="query" :selected_category="selected_category" />
+{% else %}
+<c-empty-state
+  title="No books match your search"
+  description="Try a different keyword, or clear the category filter."
+  icon="🔍"
+/>
+{% endif %}

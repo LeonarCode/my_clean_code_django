@@ -1,0 +1,57 @@
+<c-vars book is_owner=False is_borrowed_by_me=False active_borrowing=None />
+<article
+  id="book-card-{{ book.id }}"
+  class="group flex flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-lg dark:border-slate-800 dark:bg-slate-900"
+>
+  <a href="{% url 'book-detail' book.id %}" class="block aspect-[3/4] overflow-hidden bg-slate-100 dark:bg-slate-800">
+    {% if book.image %}
+      <img src="{{ book.image.url }}" alt="{{ book.title }}" class="h-full w-full object-cover transition duration-300 group-hover:scale-105" loading="lazy">
+    {% else %}
+      <div class="flex h-full w-full items-center justify-center text-4xl">📖</div>
+    {% endif %}
+  </a>
+
+  <div class="flex flex-1 flex-col gap-2 p-4">
+    <div class="flex items-start justify-between gap-2">
+      <c-badge tone="slate">{{ book.category.name }}</c-badge>
+      {% if book.available %}
+        <c-badge tone="teal">Available</c-badge>
+      {% else %}
+        <c-badge tone="rose">Borrowed</c-badge>
+      {% endif %}
+    </div>
+
+    <a href="{% url 'book-detail' book.id %}" class="line-clamp-2 font-semibold text-slate-900 hover:text-teal-700 dark:text-white dark:hover:text-teal-400">
+      {{ book.title }}
+    </a>
+    <p class="text-sm text-slate-500 dark:text-slate-400">{{ book.author }}</p>
+
+    <div class="mt-auto pt-3">
+      {% if request.user.is_authenticated %}
+        {% if is_owner %}
+          <a href="{% url 'book-detail' book.id %}" class="inline-flex w-full items-center justify-center rounded-xl border border-slate-300 px-4 py-2.5 text-sm font-medium text-slate-600 transition hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800">
+            Manage listing
+          </a>
+        {% elif is_borrowed_by_me %}
+          <form hx-post="{% url 'borrowing-return' active_borrowing.id %}" hx-target="#book-card-{{ book.id }}" hx-swap="outerHTML swap:150ms">
+            <c-button type="submit" variant="secondary" class="w-full">Return book</c-button>
+          </form>
+        {% elif book.available %}
+          <form hx-post="{% url 'book-borrow' book.id %}" hx-target="#book-card-{{ book.id }}" hx-swap="outerHTML swap:150ms">
+            <c-button type="submit" variant="primary" class="w-full">Borrow</c-button>
+          </form>
+        {% else %}
+          <c-button type="button" variant="secondary" class="w-full" disabled>Currently unavailable</c-button>
+        {% endif %}
+      {% else %}
+        {% if book.available %}
+          <a href="{% url 'login' %}?next={% url 'home' %}" class="inline-flex w-full items-center justify-center rounded-xl bg-teal-600 px-4 py-2.5 text-sm font-medium text-white shadow-sm shadow-teal-600/20 transition hover:bg-teal-500">
+            Log in to borrow
+          </a>
+        {% else %}
+          <c-button type="button" variant="secondary" class="w-full" disabled>Currently unavailable</c-button>
+        {% endif %}
+      {% endif %}
+    </div>
+  </div>
+</article>

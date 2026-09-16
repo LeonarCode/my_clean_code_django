@@ -1,0 +1,5 @@
+<div id="toast-region" hx-swap-oob="beforeend">
+  {% for message in messages %}
+    <c-toast :message="message" />
+  {% endfor %}
+</div>

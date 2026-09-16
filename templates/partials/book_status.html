@@ -1,0 +1,50 @@
+<div id="book-status" class="space-y-4">
+  <div class="flex flex-wrap items-center gap-2">
+    {% if book.available %}
+      <c-badge tone="teal">Available</c-badge>
+    {% else %}
+      <c-badge tone="rose">Borrowed</c-badge>
+    {% endif %}
+    <c-badge tone="slate">{{ book.category.name }}</c-badge>
+  </div>
+
+  {% if request.user.is_authenticated %}
+    {% if is_owner %}
+      <div class="flex flex-wrap gap-3">
+        <a href="{% url 'book-update' book.id %}"><c-button variant="secondary">Edit book</c-button></a>
+        <c-modal title="Delete this book?" cancel_label="Cancel">
+          <c-slot name="trigger"><c-button variant="danger">Delete</c-button></c-slot>
+          This permanently removes &ldquo;{{ book.title }}&rdquo; from the shelf. This can&rsquo;t be undone.
+          <c-slot name="confirm">
+            <form method="post" action="{% url 'book-delete' book.id %}">
+              {% csrf_token %}
+              <c-button type="submit" variant="danger">Yes, delete it</c-button>
+            </form>
+          </c-slot>
+        </c-modal>
+      </div>
+    {% elif is_borrowed_by_me %}
+      <form
+        hx-post="{% url 'borrowing-return' active_borrowing.id %}?panel=detail"
+        hx-target="#book-status"
+        hx-swap="outerHTML swap:150ms"
+      >
+        <c-button type="submit" variant="secondary" size="lg">Return this book</c-button>
+      </form>
+    {% elif book.available %}
+      <form
+        hx-post="{% url 'book-borrow' book.id %}?panel=detail"
+        hx-target="#book-status"
+        hx-swap="outerHTML swap:150ms"
+      >
+        <c-button type="submit" variant="primary" size="lg">Borrow this book</c-button>
+      </form>
+    {% else %}
+      <c-button type="button" variant="secondary" size="lg" disabled>Currently unavailable</c-button>
+    {% endif %}
+  {% else %}
+    <a href="{% url 'login' %}?next={{ request.path }}">
+      <c-button type="button" variant="primary" size="lg">Log in to borrow</c-button>
+    </a>
+  {% endif %}
+</div>

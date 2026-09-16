@@ -1,0 +1,18 @@
+<c-vars field label="" hint="" />
+<div class="space-y-1.5">
+  {% if label %}
+  <label for="{{ field.id_for_label }}" class="block text-sm font-medium text-slate-700 dark:text-slate-200">
+    {{ label }}{% if field.field.required %} <span class="text-rose-500">*</span>{% endif %}
+  </label>
+  {% endif %}
+
+  {{ field }}
+
+  {% if hint and not field.errors %}
+  <p class="text-xs text-slate-500 dark:text-slate-400">{{ hint }}</p>
+  {% endif %}
+
+  {% for error in field.errors %}
+  <p class="text-xs font-medium text-rose-600 dark:text-rose-400">{{ error }}</p>
+  {% endfor %}
+</div>

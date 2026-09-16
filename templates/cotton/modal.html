@@ -1,0 +1,24 @@
+<c-vars title="Are you sure?" cancel_label="Cancel" />
+<span x-data="{ open: false }">
+  <span @click="open = true" class="inline-block cursor-pointer">{{ trigger }}</span>
+
+  <div x-show="open" x-cloak class="fixed inset-0 z-50 flex items-center justify-center p-4" @keydown.escape.window="open = false">
+    <div x-show="open" x-transition.opacity @click="open = false" class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"></div>
+
+    <div
+      x-show="open"
+      x-transition:enter="transition ease-out duration-200"
+      x-transition:enter-start="opacity-0 scale-95"
+      x-transition:enter-end="opacity-100 scale-100"
+      class="relative w-full max-w-sm rounded-2xl bg-white p-6 shadow-xl dark:bg-slate-900"
+    >
+      <h3 class="text-lg font-semibold text-slate-900 dark:text-white">{{ title }}</h3>
+      <div class="mt-2 text-sm text-slate-600 dark:text-slate-400">{{ slot }}</div>
+
+      <div class="mt-6 flex justify-end gap-3">
+        <c-button type="button" variant="secondary" @click="open = false">{{ cancel_label }}</c-button>
+        {{ confirm }}
+      </div>
+    </div>
+  </div>
+</span>

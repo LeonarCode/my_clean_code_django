@@ -1,0 +1,49 @@
+<!--extends for all including authentications pages-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% load static %}
+
+    <!-- Set the theme before first paint so there's no light/dark flash -->
+    <script>
+        (function () {
+            var dark = localStorage.getItem('theme') === 'dark';
+            document.documentElement.classList.toggle('dark', dark);
+        })();
+    </script>
+
+    <link rel="stylesheet" href="{% static 'css/output.css' %}">
+    <title>{% block title %}SaiNin Academy Bookshelf{% endblock %}</title>
+
+    <!-- HTMX -->
+    <script src="https://unpkg.com/htmx.org@2.0.4" integrity="sha384-HGfztofotfshcF7+8n44JQL2oJmowVChPTg48W4dGwZeoQhwqjEg/AFZBI+GKcAO" crossorigin="anonymous"></script>
+
+    <!-- Alpine.js (defer, load after HTMX) -->
+    <script src="https://unpkg.com/alpinejs@3.14.9/dist/cdn.min.js" defer></script>
+
+    <script src="{% static 'js/app.js' %}" defer></script>
+
+    <!-- CSRF token setup for HTMX (Django) -->
+    <meta name="csrf-token" content="{{ csrf_token }}">
+    <script>
+        document.body.addEventListener('htmx:configRequest', (event) => {
+            event.detail.headers['X-CSRFToken'] = document.querySelector('meta[name="csrf-token"]').content;
+        });
+    </script>
+</head>
+<body class="min-h-screen bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100" hx-indicator="#htmx-progress">
+    <!-- Slim top progress bar for any in-flight htmx request -->
+    <div id="htmx-progress" class="fixed inset-x-0 top-0 z-50 h-1 bg-teal-500"></div>
+
+    {% block childContent %}{% endblock %}
+
+    <!-- Toast region: initial django messages + anything htmx OOB-swaps in later -->
+    <div id="toast-region" class="pointer-events-none fixed inset-x-0 bottom-0 z-50 flex flex-col items-end gap-2 p-4 sm:bottom-4 sm:right-4 sm:items-end">
+        {% for message in messages %}
+            <c-toast :message="message" />
+        {% endfor %}
+    </div>
+</body>
+</html>

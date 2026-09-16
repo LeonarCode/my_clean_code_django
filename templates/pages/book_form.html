@@ -1,0 +1,52 @@
+{% extends 'app.html' %}
+
+{% block title %}{% if mode == 'update' %}Edit book{% else %}Add a book{% endif %} · SaiNin Academy Bookshelf{% endblock %}
+
+{% block content %}
+<section class="mx-auto max-w-2xl px-4 py-8 sm:px-6 lg:px-8">
+  <h1 class="text-2xl font-bold text-slate-900 dark:text-white">
+    {% if mode == 'update' %}Edit book{% else %}Add a book to the shelf{% endif %}
+  </h1>
+  <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">
+    {% if mode == 'update' %}Update the details for &ldquo;{{ book.title }}&rdquo;.{% else %}Share a book so classmates can borrow it.{% endif %}
+  </p>
+
+  <form method="post" enctype="multipart/form-data" class="mt-8 space-y-5" novalidate>
+    {% csrf_token %}
+
+    {% if form.non_field_errors %}
+    <div class="rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700 dark:border-rose-500/30 dark:bg-rose-500/10 dark:text-rose-300">
+      {{ form.non_field_errors }}
+    </div>
+    {% endif %}
+
+    <div
+      x-data="imagePreview('{% if book.image %}{{ book.image.url }}{% endif %}')"
+      @change="onChange($event)"
+      class="flex items-start gap-4"
+    >
+      <div class="h-28 w-20 shrink-0 overflow-hidden rounded-xl bg-slate-100 dark:bg-slate-800">
+        <img x-show="previewUrl" :src="previewUrl" class="h-full w-full object-cover" x-cloak>
+        <div x-show="!previewUrl" class="flex h-full w-full items-center justify-center text-2xl">📖</div>
+      </div>
+      <div class="flex-1">
+        <c-input :field="form.image" label="Cover image" hint="Optional. JPG or PNG works best." />
+      </div>
+    </div>
+
+    <c-input :field="form.title" label="Title" />
+    <c-input :field="form.author" label="Author" />
+    <c-input :field="form.isbn" label="ISBN" />
+    <c-input :field="form.category" label="Category" />
+
+    <div class="flex items-center gap-3 pt-2">
+      <c-button type="submit" variant="primary">
+        {% if mode == 'update' %}Save changes{% else %}Add book{% endif %}
+      </c-button>
+      <a href="{% if mode == 'update' %}{% url 'book-detail' book.id %}{% else %}{% url 'home' %}{% endif %}">
+        <c-button type="button" variant="ghost">Cancel</c-button>
+      </a>
+    </div>
+  </form>
+</section>
+{% endblock %}

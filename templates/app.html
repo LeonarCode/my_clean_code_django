@@ -1,0 +1,8 @@
+<!--extends for mainpage from ./pages-->
+{% extends 'base.html' %}
+
+{% block childContent %}
+    {% include 'partials/header.html' %}
+    {% block content %}{% endblock %}
+    {% include 'partials/footer.html' %}
+{% endblock %}

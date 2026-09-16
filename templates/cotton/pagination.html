@@ -1,0 +1,34 @@
+<c-vars page_obj query="" selected_category="" />
+{% if page_obj.has_other_pages %}
+<nav class="mt-8 flex items-center justify-center gap-1" aria-label="Pagination">
+  {% if page_obj.has_previous %}
+  <button
+    type="button"
+    class="rounded-lg px-3 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800"
+    hx-get="?page={{ page_obj.previous_page_number }}{% if query %}&amp;q={{ query|urlencode }}{% endif %}{% if selected_category %}&amp;category={{ selected_category }}{% endif %}"
+    hx-target="#book-grid"
+    hx-swap="innerHTML show:window:top"
+    hx-push-url="true"
+  >← Prev</button>
+  {% else %}
+  <span class="cursor-not-allowed rounded-lg px-3 py-2 text-sm font-medium text-slate-300 dark:text-slate-700">← Prev</span>
+  {% endif %}
+
+  <span class="px-3 py-2 text-sm text-slate-500 dark:text-slate-400">
+    Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+  </span>
+
+  {% if page_obj.has_next %}
+  <button
+    type="button"
+    class="rounded-lg px-3 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800"
+    hx-get="?page={{ page_obj.next_page_number }}{% if query %}&amp;q={{ query|urlencode }}{% endif %}{% if selected_category %}&amp;category={{ selected_category }}{% endif %}"
+    hx-target="#book-grid"
+    hx-swap="innerHTML show:window:top"
+    hx-push-url="true"
+  >Next →</button>
+  {% else %}
+  <span class="cursor-not-allowed rounded-lg px-3 py-2 text-sm font-medium text-slate-300 dark:text-slate-700">Next →</span>
+  {% endif %}
+</nav>
+{% endif %}
